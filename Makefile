@@ -18,7 +18,7 @@ PKG_BUILD_DIR=$(BUILD_DIR)/sbc-$(PKG_VERSION)
 include $(INCLUDE_DIR)/package.mk
 
 define Package/libsbc
-	TITLE:=Bluetooth Subband Codec (SBC) library
+	TITLE:=Bluetooth Sub-band Codec (SBC) library
 	SECTION:=libs
 	CATEGORY:=Libraries
 	URL:=http://www.bluez.org/
