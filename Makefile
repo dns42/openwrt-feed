@@ -41,6 +41,7 @@ define Build/Compile
 	$(call Build/Compile/Default)
 	make -C $(PKG_BUILD_DIR) \
 		DESTDIR="$(PKG_INSTALL_DIR)" \
+		CFLAGS="-Os" \
 		install
 endef
 
