@@ -1,0 +1,58 @@
+From 9a3e80b7a7987ac8e648ac17720eb90494f462dc Mon Sep 17 00:00:00 2001
+From: Daniel Stodden <daniel.stodden@gmail.com>
+Date: Sun, 11 May 2014 22:17:55 -0700
+Subject: [PATCH] Add a 5th map element to flip strip orientation.
+
+---
+ server/src/fcdevice.cpp | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/server/src/fcdevice.cpp b/server/src/fcdevice.cpp
+index 9b9e868..d54e940 100644
+--- a/server/src/fcdevice.cpp
++++ b/server/src/fcdevice.cpp
+@@ -528,19 +528,22 @@ void FCDevice::opcMapPixelColors(const OPC::Message &msg, const Value &inst)
+ 
+     unsigned msgPixelCount = msg.length() / 3;
+ 
+-    if (inst.IsArray() && inst.Size() == 4) {
++    if (inst.IsArray() && (inst.Size() == 4 || inst.Size() == 5)) {
+         // Map a range from an OPC channel to our framebuffer
+ 
+         const Value &vChannel = inst[0u];
+         const Value &vFirstOPC = inst[1];
+         const Value &vFirstOut = inst[2];
+         const Value &vCount = inst[3];
++        const Value defaultDir(1);
++        const Value &vDir = inst.Size() == 5 ? inst[4] : defaultDir;
+ 
+         if (vChannel.IsUint() && vFirstOPC.IsUint() && vFirstOut.IsUint() && vCount.IsUint()) {
+             unsigned channel = vChannel.GetUint();
+             unsigned firstOPC = vFirstOPC.GetUint();
+             unsigned firstOut = vFirstOut.GetUint();
+             unsigned count = vCount.GetUint();
++            int dir = vDir.GetInt() < 0 ? -1 : 1;
+ 
+             if (channel != msg.channel) {
+                 return;
+@@ -554,14 +557,15 @@ void FCDevice::opcMapPixelColors(const OPC::Message &msg, const Value &inst)
+ 
+             // Copy pixels
+             const uint8_t *inPtr = msg.data + (firstOPC * 3);
+-            unsigned outIndex = firstOut;
++            unsigned outIndex = dir > 0 ? firstOut : firstOut + count - 1;
+ 
+             while (count--) {
+-                uint8_t *outPtr = fbPixel(outIndex++);
++                uint8_t *outPtr = fbPixel(outIndex);
+                 outPtr[0] = inPtr[0];
+                 outPtr[1] = inPtr[1];
+                 outPtr[2] = inPtr[2];
+                 inPtr += 3;
++                outIndex += dir;
+             }
+ 
+             return;
+-- 
+1.8.3.2
+

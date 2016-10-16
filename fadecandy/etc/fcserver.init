@@ -1,0 +1,40 @@
+#!/bin/sh /etc/rc.common
+
+FCSERVER=/usr/bin/fcserver
+DESC="Fadecandy Server"
+START=99
+STOP=01
+
+set -e
+
+start()
+{
+	echo -n "Starting $DESC: $(basename $FCSERVER)"
+	$FCSERVER /etc/fcserver.config &
+	echo "."
+}
+
+stop()
+{
+	echo -n "Stopping $DESC: $(basename $FCSERVER)"
+	for pid in $(pidof $(basename $FCSERVER))
+	do
+		if [ $(readlink /proc/$pid/exe) = $FCSERVER ]
+		then
+			kill -TERM $pid
+		fi
+	done
+	echo "."
+}
+
+restart()
+{
+	stop
+	sleep 3
+	start
+}
+
+reload()
+{
+	restart
+}
