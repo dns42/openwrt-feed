@@ -1,0 +1,24 @@
+--- a/configure.ac	2013-09-17 23:19:42.000000000 -0700
++++ b/configure.ac	2015-01-16 23:07:48.702557001 -0800
+@@ -77,9 +77,9 @@
+ AM_PROG_CC_C_O
+ 
+ # Checks for libraries.
+-AC_CHECK_LIB([termcap], [tputs])
+-AC_CHECK_LIB([ncurses], [tputs])
+-AC_CHECK_LIB([readline], [readline])
++#AC_CHECK_LIB([termcap], [tputs])
++#AC_CHECK_LIB([ncurses], [tputs])
++#AC_CHECK_LIB([readline], [readline])
+ AH_TEMPLATE([HAVE_LIBELF],
+             [Define if ELF support is enabled via libelf])
+ AC_CHECK_LIB([elf], [elf_begin], [have_libelf=yes])
+@@ -116,7 +116,7 @@
+ 
+ AH_TEMPLATE([HAVE_LIBUSB_1_0],
+             [Define if USB support is enabled via libusb 1.0])
+-AC_CHECK_LIB([usb-1.0], [libusb_init], [have_libusb_1_0=yes])
++#AC_CHECK_LIB([usb-1.0], [libusb_init], [have_libusb_1_0=yes])
+ if test x$have_libusb_1_0 = xyes; then
+    case $target in
+        *-*-darwin*)
